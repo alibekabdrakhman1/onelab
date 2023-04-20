@@ -1,0 +1,32 @@
+version: "3.9"
+
+volumes:
+  api_data:
+
+services:
+  main-app:
+    build: ./
+    command: ./app
+    ports:
+      - "8586:8586"
+    volumes:
+      - .:/src
+    environment:
+      - GONOSUMDB=off
+      - TZ=Asia/Almaty
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:13.2-alpine
+    volumes:
+      - api_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5437:5432"
+networks:
+  backend:
+    driver: bridge

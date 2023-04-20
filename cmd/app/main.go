@@ -16,6 +16,10 @@ import (
 	"os/signal"
 )
 
+// @title           OneLab
+// @version         1.0
+// @host      localhost:8080
+
 func main() {
 	log.Fatal(run())
 }

@@ -20,6 +20,18 @@ func (h *UserHandler) GetBooks(c echo.Context) error {
 	panic("implement me")
 }
 
+// ShowSpentMoney godoc
+// @Summary      Show
+// @Description  get string by ID
+// @Tags         accounts
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "Account ID"
+// @Success      200  {object}  model.Account
+// @Failure      400  {object}  httputil.HTTPError
+// @Failure      404  {object}  httputil.HTTPError
+// @Failure      500  {object}  httputil.HTTPError
+// @Router       /accounts/{id} [get]
 func (h *UserHandler) GetSpentMoney(c echo.Context) error {
 	res, _ := h.Service.User.GetSpentMoney(c.Request().Context())
 	return c.JSON(http.StatusOK, res)

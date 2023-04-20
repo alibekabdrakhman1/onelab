@@ -12,7 +12,7 @@ type Config struct {
 	GrpcHost string `envDefault:":8081"`
 }
 type HTTP struct {
-	PORT string `env:"PORT" envDefault:"8080"`
+	PORT string `env:"PORT" envDefault:"8586"`
 	URL  string `env:"URL" envDefault:"localhost"`
 }
 type Database struct {
@@ -21,7 +21,7 @@ type Database struct {
 	USER     string `env:"DB_USER" envDefault:"postgres"`
 	PASSWORD string `env:"DB_PASSWORD" envDefault:"qwerty"`
 	DB       string `env:"DB_NAME" envDefault:"postgres"`
-	PgUrl    string `env:"PG_URL" envDefault:"host=localhost port=5436 user=postgres password=qwerty dbname=postgres sslmode=disable"`
+	PgUrl    string `env:"PG_URL" envDefault:"host=localhost port=5437 user=postgres password=postgres dbname=postgres sslmode=disable""`
 }
 
 func New() (*Config, error) {

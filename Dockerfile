@@ -8,8 +8,6 @@ RUN GO111MODULE="on" CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app ./cmd
 
 FROM alpine:latest
 WORKDIR /app
-COPY --from=0 /app/app .
-COPY --from=0 /app/configs /app/configs
-COPY --from=0 /app/internal/config /app/internal/config
-COPY --from=0 /app/docs /app/docs
+COPY --from=builder /app/app .
+COPY --from=builder /app/config /app/config
 CMD ["./app"]
