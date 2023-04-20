@@ -9,6 +9,7 @@ type Config struct {
 	HTTP     HTTP
 	Database Database
 	JwtKey   string `envDefault:"your-256-bit-secret"`
+	GrpcHost string `envDefault:":8081"`
 }
 type HTTP struct {
 	PORT string `env:"PORT" envDefault:"8080"`

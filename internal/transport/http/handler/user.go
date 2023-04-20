@@ -7,6 +7,7 @@ import (
 	"onelab/internal/model"
 	"onelab/internal/service"
 	"onelab/internal/transport/http/middleware"
+	"strconv"
 )
 
 type UserHandler struct {
@@ -14,14 +15,30 @@ type UserHandler struct {
 	jwt     *middleware.JWTAuth
 }
 
-func (h *UserHandler) GetOrders(c echo.Context) error {
-	userID := c.Request().Context().Value(model.ContextData{}).(string)
-	orders, err := h.Service.User.GetOrders(c.Request().Context(), userID)
-	if err != nil {
-		fmt.Println(err)
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
-	return c.JSON(http.StatusOK, orders)
+func (h *UserHandler) GetBooks(c echo.Context) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (h *UserHandler) GetSpentMoney(c echo.Context) error {
+	res, _ := h.Service.User.GetSpentMoney(c.Request().Context())
+	return c.JSON(http.StatusOK, res)
+}
+
+func (h *UserHandler) RentBook(c echo.Context) error {
+	tr, _ := h.Service.User.RentBook(c.Request().Context(), c.Param("username"), c.Param("bookId"))
+	return c.JSON(http.StatusOK, tr)
+}
+
+func (h *UserHandler) ReturnBook(c echo.Context) error {
+	return h.Service.User.ReturnBook(c.Request().Context(), c.Param("orderId"))
+}
+
+func (h *UserHandler) ReplenishBalance(c echo.Context) error {
+	value, _ := strconv.ParseFloat(c.Param("balance"), 32)
+	b := float32(value)
+	t, _ := h.Service.User.ReplenishBalance(c.Request().Context(), c.Param("username"), b)
+	return c.JSON(http.StatusOK, t)
 }
 
 func (h *UserHandler) SignUp(c echo.Context) error {
@@ -40,23 +57,6 @@ func (h *UserHandler) SignUp(c echo.Context) error {
 		"id": id,
 	})
 }
-
-func (h *UserHandler) GetAllUsers(c echo.Context) error {
-	users, err := h.Service.User.GetAllUsers(c.Request().Context())
-	if err != nil {
-		return err
-	}
-	return c.JSON(http.StatusOK, users)
-}
-
-func (h *UserHandler) GetByUsername(c echo.Context) error {
-	user, err := h.Service.User.GetByUsername(c.Request().Context(), c.Param("username"))
-	if err != nil {
-		return err
-	}
-	return c.JSON(http.StatusOK, user)
-}
-
 func (h *UserHandler) Login(c echo.Context) error {
 	var input model.LogIn
 	if err := c.Bind(&input); err != nil {
@@ -74,12 +74,27 @@ func (h *UserHandler) Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, token)
 }
 
+func (h *UserHandler) GetOrders(c echo.Context) error {
+	userID := c.Request().Context().Value(model.ContextData{}).(string)
+	orders, err := h.Service.User.GetOrders(c.Request().Context(), userID)
+	if err != nil {
+		fmt.Println(err)
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, orders)
+}
+
 type IUserHandler interface {
 	GetOrders(c echo.Context) error
 	SignUp(c echo.Context) error
 	GetAllUsers(c echo.Context) error
 	GetByUsername(c echo.Context) error
 	Login(c echo.Context) error
+	GetBooks(c echo.Context) error
+	GetSpentMoney(c echo.Context) error
+	RentBook(c echo.Context) error
+	ReturnBook(c echo.Context) error
+	ReplenishBalance(c echo.Context) error
 }
 
 func NewUserHandler(s *service.Service, jwt *middleware.JWTAuth) *UserHandler {
@@ -87,4 +102,20 @@ func NewUserHandler(s *service.Service, jwt *middleware.JWTAuth) *UserHandler {
 		Service: s,
 		jwt:     jwt,
 	}
+}
+
+func (h *UserHandler) GetAllUsers(c echo.Context) error {
+	users, err := h.Service.User.GetAllUsers(c.Request().Context())
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK, users)
+}
+
+func (h *UserHandler) GetByUsername(c echo.Context) error {
+	user, err := h.Service.User.GetByUsername(c.Request().Context(), c.Param("username"))
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK, user)
 }

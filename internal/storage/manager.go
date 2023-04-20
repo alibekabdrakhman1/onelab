@@ -8,24 +8,30 @@ import (
 )
 
 type IUserRepository interface {
-	GetOrders(ctx context.Context, userID string) ([]model.Order, error)
 	SignUp(ctx context.Context, user model.User) (string, error)
+	GetOrders(ctx context.Context, userID string) ([]model.Order, error)
 	GetAllUsers(ctx context.Context) ([]model.User, error)
 	GetByUsername(ctx context.Context, userName string) (model.User, error)
+	GetSpentMoney(ctx context.Context) ([]model.SpentMoney, error)
+	RentBook(ctx context.Context, username string, book model.Book) (model.Transaction, error)
+	ReplenishBalance(ctx context.Context, username string, amount float32) error
 }
 type IBookRepository interface {
 	Create(ctx context.Context, book model.Book) (string, error)
 	GetAvailable(ctx context.Context) ([]model.Book, error)
 	GetAllBooks(ctx context.Context) ([]model.Book, error)
-	GetByAuthor(ctx context.Context, author string) (model.Book, error)
+	GetByID(ctx context.Context, id string) (model.Book, error)
+	Update(ctx context.Context, book model.Book) error
+	ReturnBook(ctx context.Context, bookId string) error
 }
 
 type IOrderRepository interface {
 	Create(ctx context.Context, order model.Order) (string, error)
-	ReturnBook(ctx context.Context, orderId string) error
 	GetAllOrders(ctx context.Context) ([]model.Order, error)
 	GetNotReturned(ctx context.Context) ([]model.Order, error)
 	GetLastMonthOrders(ctx context.Context) ([]model.Order, error)
+	Update(ctx context.Context, order model.Order) error
+	ReturnBook(ctx context.Context, orderId string) (model.Order, error)
 }
 
 type Storage struct {

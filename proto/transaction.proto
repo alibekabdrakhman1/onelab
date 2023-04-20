@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package transactions;
+
+
+service TransactionService {
+  rpc Create(CreateTransRequest) returns (CreateTransResponse) {}
+  rpc Delete(DeleteTransRequest) returns (DeleteTransResponse) {}
+  rpc Get(GetTransRequest) returns (GetTransResponse) {}
+}
+
+message CreateTransRequest {
+  Transaction transaction = 1;
+}
+
+message CreateTransResponse {
+  string id = 1;
+}
+
+message DeleteTransRequest {
+  string transactionID = 1;
+}
+
+message DeleteTransResponse {
+}
+
+message GetTransRequest {
+  string transactionID = 1;
+}
+
+message GetTransResponse {
+  Transaction transaction = 1;
+}
+message Transaction {
+  string username = 1;
+  string type = 2;
+  int32 amount = 3;
+  string description = 4;
+}
+
+

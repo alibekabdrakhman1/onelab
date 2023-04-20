@@ -10,6 +10,7 @@ import (
 	"onelab/config"
 	"onelab/internal/transport/http/handler"
 	middleware2 "onelab/internal/transport/http/middleware"
+	transactions "onelab/proto"
 	"time"
 )
 
@@ -18,14 +19,16 @@ type Server struct {
 	handler *handler.Manager
 	App     *echo.Echo
 	m       *middleware2.JWTAuth
+	grpc    transactions.TransactionServiceClient
 }
 
-func NewServer(cfg *config.Config, handler *handler.Manager, jwt *middleware2.JWTAuth) *Server {
+func NewServer(cfg *config.Config, handler *handler.Manager, jwt *middleware2.JWTAuth, grpc transactions.TransactionServiceClient) *Server {
 
 	return &Server{
 		cfg:     cfg,
 		handler: handler,
 		m:       jwt,
+		grpc:    grpc,
 	}
 }
 

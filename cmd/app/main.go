@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"onelab/config"
 	"onelab/internal/service"
@@ -9,6 +11,7 @@ import (
 	"onelab/internal/transport/http"
 	"onelab/internal/transport/http/handler"
 	"onelab/internal/transport/http/middleware"
+	transactions "onelab/proto"
 	"os"
 	"os/signal"
 )
@@ -28,13 +31,20 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	svc, err := service.NewManager(repo)
+	conn, err := grpc.Dial(conf.GrpcHost, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	grpcServer := transactions.NewTransactionServiceClient(conn)
+	svc, err := service.NewManager(repo, grpcServer)
 	if err != nil {
 		return err
 	}
 	jwt := middleware.NewJWTAuth(conf, *svc)
-	h := handler.NewManager(svc, jwt)
-	HTTPServer := http.NewServer(conf, h, jwt)
+	h := handler.NewManager(svc, jwt, grpcServer)
+	HTTPServer := http.NewServer(conf, h, jwt, grpcServer)
 	return HTTPServer.StartHTTPServer(ctx)
 }
 func gracefullyShutdown(c context.CancelFunc) {

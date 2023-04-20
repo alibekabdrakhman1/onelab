@@ -12,6 +12,11 @@ type OrderHandler struct {
 	Service *service.Service
 }
 
+func (h *OrderHandler) Update(c echo.Context) error {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (h *OrderHandler) Create(c echo.Context) error {
 	var input model.Order
 
@@ -29,9 +34,10 @@ func (h *OrderHandler) Create(c echo.Context) error {
 	})
 }
 
-func (h *OrderHandler) ReturnBook(c echo.Context) error {
-	return h.Service.Order.ReturnBook(c.Request().Context(), c.Param("orderID"))
-}
+//
+//func (h *OrderHandler) ReturnBook(c echo.Context) error {
+//	return h.Service.Order.ReturnBook(c.Request().Context(), c.Param("orderID"))
+//}
 
 func (h *OrderHandler) GetAllOrders(c echo.Context) error {
 	orders, err := h.Service.Order.GetAllOrders(c.Request().Context())
@@ -62,7 +68,7 @@ type IOrderHandler interface {
 	GetNotReturned(c echo.Context) error
 	GetLastMonthOrders(c echo.Context) error
 	Create(c echo.Context) error
-	ReturnBook(c echo.Context) error
+	Update(c echo.Context) error
 }
 
 func NewOrderHandler(s *service.Service) *OrderHandler {

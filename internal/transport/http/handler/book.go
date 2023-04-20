@@ -12,6 +12,11 @@ type BookHandler struct {
 	Service *service.Service
 }
 
+func (h *BookHandler) Update(c echo.Context) error {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (h *BookHandler) Create(c echo.Context) error {
 	var input model.Book
 
@@ -44,8 +49,8 @@ func (h *BookHandler) GetAllBooks(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func (h *BookHandler) GetByAuthor(c echo.Context) error {
-	resp, err := h.Service.Book.GetByAuthor(c.Request().Context(), c.Param("author"))
+func (h *BookHandler) GetByID(c echo.Context) error {
+	resp, err := h.Service.Book.GetByID(c.Request().Context(), c.Param("id"))
 	if err != nil {
 		return err
 	}
@@ -55,8 +60,9 @@ func (h *BookHandler) GetByAuthor(c echo.Context) error {
 type IBookHandler interface {
 	GetAvailable(c echo.Context) error
 	GetAllBooks(c echo.Context) error
-	GetByAuthor(c echo.Context) error
+	GetByID(c echo.Context) error
 	Create(c echo.Context) error
+	Update(c echo.Context) error
 }
 
 func NewBookHandler(s *service.Service) *BookHandler {
